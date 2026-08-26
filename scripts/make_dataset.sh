@@ -125,7 +125,7 @@ do
              s/.png/ .png/' |
         sort -n -k 2 |
         sed 's/ //g'
-      fi | cat -n |
+      fi | cat -n | tail -n +301 |
       awk \
         -v seed=$seed \
       'BEGIN {
