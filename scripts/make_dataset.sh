@@ -41,8 +41,20 @@ else
   else
     mkdir \
       "$dir" \
-      "$dir"/train \
-      "$dir"/test
+      "$dir"/rgb \
+      "$dir"/rgb/images \
+      "$dir"/rgb/images/train \
+      "$dir"/rgb/images/val \
+      "$dir"/rgb/labels \
+      "$dir"/rgb/labels/train \
+      "$dir"/rgb/labels/val \
+      "$dir"/event \
+      "$dir"/event/images \
+      "$dir"/event/images/train \
+      "$dir"/event/images/val \
+      "$dir"/event/labels \
+      "$dir"/event/labels/train \
+      "$dir"/event/labels/val
   fi
 fi
 
@@ -51,7 +63,7 @@ then
   echo error: bad number of images per sequence: $4 1>&2
   exit 6
 else
-  n=$4
+  s=$4
 fi
 
 case "$5" in
@@ -85,42 +97,42 @@ fi
 
 for i in train test
 do
-  for j in `cd "$fred"/$i ; ls *.zip`
+  if test $i = train
+  then
+    j=train
+  else
+    j=val
+  fi
+  for k in `cd "$fred"/$i ; ls *.zip`
   do
-    ( ( cd "$fred"/$i ; unzip $j > /dev/null )
-    k=`echo $j | sed 's/.zip//'`
-    mkdir -p "$dir"/$i/$k
-    for l in rgb event
+    ( ( cd "$fred"/$i ; unzip $k > /dev/null )
+    l=`echo $k | sed 's/.zip//'`
+    for m in rgb event
     do
-      if test $l = rgb
+      mkdir \
+        "$dir"/$m/images/$j/$l \
+        "$dir"/$m/labels/$j/$l
+      if test $m = rgb
       then
-        mkdir \
-          "$dir"/$i/$k/$l \
-          "$dir"/$i/$k/$l/data \
-          "$dir"/$i/$k/$l/labels
-        if test $k -eq 68
+        if test $l -eq 68
         then
-          ( cd "$fred"/$i/$k/RGB
-          for m in *
+          ( cd "$fred"/$i/$l/RGB
+          for n in *
           do
-            mv $m `echo $m | sed 's/^/Video_68_/'`
+            mv $n `echo $n | sed 's/^/Video_68_/'`
           done )
         fi
-        ls "$fred"/$i/$k/RGB
+        ls "$fred"/$i/$l/RGB
       else
-        mkdir \
-          "$dir"/$i/$k/$l \
-          "$dir"/$i/$k/$l/data \
-          "$dir"/$i/$k/$l/labels
-        ( cd "$fred"/$i/$k/Event/Frames
-        for m in *
+        ( cd "$fred"/$i/$l/Event/Frames
+        for n in *
         do
-          if ! echo $m | grep -q frame
+          if ! echo $n | grep -q frame
           then
-            mv $m `echo $m | sed 's/_/_frame_/2'`
+            mv $n `echo $n | sed 's/_/_frame_/2'`
           fi
         done )
-        ls "$fred"/$i/$k/Event/Frames |
+        ls "$fred"/$i/$l/Event/Frames |
         sed 's/_/_ /3
              s/.png/ .png/' |
         sort -n -k 2 |
@@ -133,12 +145,12 @@ do
         while (getline) {
           printf("%lf %d %s\n", rand(), $1, $2)
         }
-      }' | sort -n | head -n $n |
+      }' | sort -n | head -n $s |
       while read junk pos df
       do
-        if test $l = rgb
+        if test $m = rgb
         then
-          cp "$fred"/$i/$k/RGB/$df "$dir"/$i/$k/$l/data
+          cp "$fred"/$i/$l/RGB/$df "$dir"/$m/images/$j/$l
           if test $type = spiking
           then
             lf=`echo $df | sed 's/jpg/json/'`
@@ -146,7 +158,7 @@ do
             lf=`echo $df | sed 's/jpg/txt/'`
           fi
         else
-          cp "$fred"/$i/$k/Event/Frames/$df "$dir"/$i/$k/$l/data
+          cp "$fred"/$i/$l/Event/Frames/$df "$dir"/$m/images/$j/$l
           if test $type = spiking
           then
             lf=`echo $df | sed 's/png/json/'`
@@ -160,14 +172,14 @@ do
              s/\(\......\):/\10/
              s/\.//
              s/://
-             s/,//g' "$fred"/$i/$k/coordinates.txt |
-        grep "^$t " |
+             s/,//g' "$fred"/$i/$l/coordinates.txt |
+        grep "^$t " | uniq |
         if test $type = spiking
         then
           awk \
             -v df=$df \
             -v lf=$lf \
-            -v labels="$dir"/$i/$k/$l/labels \
+            -v labels="$dir"/$m/labels/$j/$l \
           'BEGIN {
             cmd = "echo '\''a\n"
             cmd = cmd "["
@@ -208,7 +220,7 @@ do
         else
           awk \
             -v lf=$lf \
-            -v labels="$dir"/$i/$k/$l/labels \
+            -v labels="$dir"/$m/labels/$j/$l \
           'BEGIN {
             cmd = "echo '\''a\n"
             while (getline) {
@@ -243,7 +255,7 @@ do
         fi
       done
     done
-    ( cd "$fred"/$i ; rm -rf $k ) ) &
+    ( cd "$fred"/$i ; rm -rf $l ) ) &
     np=$((np+1))
     if test $np -eq $threads
     then
@@ -252,3 +264,5 @@ do
     fi
   done
 done
+
+wait
