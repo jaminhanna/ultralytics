@@ -1,0 +1,6 @@
+mAP@50 roughly 0.4. mAP@50:95 roughly 0.135.
+Time per epochs, from nano to xlarge, are:
+40, 65, 140, 180, ... (still waiting on
+xlarge results). This shows that training
+time, using 60 images per sequence, is
+roughly double that when using 30.
