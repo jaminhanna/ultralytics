@@ -1,0 +1,380 @@
+newgraph
+
+  xaxis
+    min
+      0
+    size
+      1.5
+    label : Epoch
+
+  yaxis
+    size
+      1.5
+    label : mAP@50
+
+  title
+    y
+      0.5
+    font
+      Times-Bold
+    fontsize
+      10
+    : FRED (canonical split) \
+      RGB images (30 per sequence)
+
+  newline
+    color
+      0.840188 0.394383 0.783099
+    label : YOLO11n (2.6M)
+    pts
+      shell : awk '{ \
+                if (NR > 1) { \
+                  gsub(/,/, " "); \
+                  printf("%d %s\n", NR - 1, $8) \
+                } \
+              }' nano/results.csv
+
+  newline
+    color
+      0.700976 0.809676 0.0887955
+    label : YOLO11s (9.4M)
+    pts
+      shell : awk '{ \
+                if (NR > 1) { \
+                  gsub(/,/, " "); \
+                  printf("%d %s\n", NR - 1, $8) \
+                } \
+              }' small/results.csv
+
+  newline
+    color
+      0.56138 0.224983 0.393092
+    label : YOLO11m (20.1M)
+    pts
+      shell : awk '{ \
+                if (NR > 1) { \
+                  gsub(/,/, " "); \
+                  printf("%d %s\n", NR - 1, $8) \
+                } \
+              }' med/results.csv
+
+  newline
+    color
+      0.916458 0.133982 0.191211
+    label : YOLO11l (25.3M)
+    pts
+      shell : awk '{ \
+                if (NR > 1) { \
+                  gsub(/,/, " "); \
+                  printf("%d %s\n", NR - 1, $8) \
+                } \
+              }' large/results.csv
+
+  newline
+    color
+      0.274746 0.0464678 0.992755
+    label : YOLO11x (56.9M)
+    pts
+      shell : awk '{ \
+                if (NR > 1) { \
+                  gsub(/,/, " "); \
+                  printf("%d %s\n", NR - 1, $8) \
+                } \
+              }' xlarge/results.csv
+
+newgraph
+
+  y_translate
+    -2.75
+
+  xaxis
+    min
+      0
+    size
+      1.5
+    label : Epoch
+
+  yaxis
+    size
+      1.5
+    label : mAP@50:95
+
+  title
+    y
+      0.175
+    font
+      Times-Bold
+    fontsize
+      10
+    : FRED (canonical split) \
+      RGB images (30 per sequence)
+
+  newline
+    color
+      0.840188 0.394383 0.783099
+    label : YOLO11n (2.6M)
+    pts
+      shell : awk '{ \
+                if (NR > 1) { \
+                  gsub(/,/, " "); \
+                  printf("%d %s\n", NR - 1, $9) \
+                } \
+              }' nano/results.csv
+
+  newline
+    color
+      0.700976 0.809676 0.0887955
+    label : YOLO11s (9.4M)
+    pts
+      shell : awk '{ \
+                if (NR > 1) { \
+                  gsub(/,/, " "); \
+                  printf("%d %s\n", NR - 1, $9) \
+                } \
+              }' small/results.csv
+
+  newline
+    color
+      0.56138 0.224983 0.393092
+    label : YOLO11m (20.1M)
+    pts
+      shell : awk '{ \
+                if (NR > 1) { \
+                  gsub(/,/, " "); \
+                  printf("%d %s\n", NR - 1, $9) \
+                } \
+              }' med/results.csv
+
+  newline
+    color
+      0.916458 0.133982 0.191211
+    label : YOLO11l (25.3M)
+    pts
+      shell : awk '{ \
+                if (NR > 1) { \
+                  gsub(/,/, " "); \
+                  printf("%d %s\n", NR - 1, $9) \
+                } \
+              }' large/results.csv
+
+  newline
+    color
+      0.274746 0.0464678 0.992755
+    label : YOLO11x (56.9M)
+    pts
+      shell : awk '{ \
+                if (NR > 1) { \
+                  gsub(/,/, " "); \
+                  printf("%d %s\n", NR - 1, $9) \
+                } \
+              }' xlarge/results.csv
+
+newgraph
+
+  y_translate
+    -5.5
+
+  xaxis
+    min
+      0.4
+    max
+      5.6
+    size
+      1
+
+    no_auto_hash_marks
+    no_auto_hash_labels
+
+    hash_labels
+      hjl
+      vjc
+      rotate
+        -45
+
+    hash_at
+      1
+    hash_label at
+      1
+      : YOLO11n
+    hash_at
+      2
+    hash_label at
+      2
+      : YOLO11s
+    hash_at
+      3
+    hash_label at
+      3
+      : YOLO11m
+    hash_at
+      4
+    hash_label at
+      4
+      : YOLO11l
+    hash_at
+      5
+    hash_label at
+      5
+      : YOLO11x
+  yaxis
+    min
+      0
+    size
+      1.5
+    label : Time (s)
+
+  title
+    y
+      170
+    font
+      Times-Bold
+    fontsize
+      10
+    : (Approximate) time per epoch
+
+  newcurve
+    marktype
+      xbar
+    marksize
+      0.8 5
+    cfill
+      1 1 0
+    pts
+      shell : for i in nano small med large xlarge; \
+              do \
+                awk '{ \
+                  if (NR > 1) { \
+                    gsub(/,/, " "); \
+                    sum = sum + $2 - last; \
+                    last = $2 \
+                  } \
+                } \
+                \
+                END { \
+                  if ("'$i'" == "nano") { \
+                    i = 1 \
+                  } else if ("'$i'" == "small") { \
+                    i = 2 \
+                  } else if ("'$i'" == "med") { \
+                    i = 3 \
+                  } else if ("'$i'" == "large") { \
+                    i = 4 \
+                  } else if ("'$i'" == "xlarge") { \
+                    i = 5 \
+                  } \
+                  printf("%d %lf\n", i, sum / (NR - 1)) \
+                }' $i/results.csv; \
+              done
+
+newgraph
+
+  x_translate
+    2
+  y_translate
+    -5.5
+
+  xaxis
+    min
+      0.4
+    max
+      5.6
+    size
+      1
+
+    no_auto_hash_marks
+    no_auto_hash_labels
+
+    hash_labels
+      hjl
+      vjc
+      rotate
+        -45
+
+    hash_at
+      1
+    hash_label at
+      1
+      : YOLO11n
+    hash_at
+      2
+    hash_label at
+      2
+      : YOLO11s
+    hash_at
+      3
+    hash_label at
+      3
+      : YOLO11m
+    hash_at
+      4
+    hash_label at
+      4
+      : YOLO11l
+    hash_at
+      5
+    hash_label at
+      5
+      : YOLO11x
+
+  yaxis
+    min
+      0
+    max
+      130
+    size
+      1.5
+    label : Batch size
+
+    no_auto_hash_marks
+    no_auto_hash_labels
+
+    hash_at
+      16
+    hash_label at
+      16
+      : 16
+    hash_at
+      32
+    hash_label at
+      32
+      : 32
+    hash_at
+      64
+    hash_label at
+      64
+      : 64
+    hash_at
+      128
+    hash_label at
+      128
+      : 128
+    hash_at
+      16
+    hash_label at
+      16
+      : 16
+
+  title
+    y
+      180
+    font
+      Times-Bold
+    fontsize
+      10
+    : Max batch size on \
+      Tesla V100S PCIe 32 GB \
+      (on ISAAC)
+
+  newcurve
+    marktype
+      xbar
+    marksize
+      0.8 5
+    cfill
+      1 1 0
+    pts
+      1 128
+      2 128
+      3 64
+      4 32
+      5 16
