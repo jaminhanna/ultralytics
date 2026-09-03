@@ -14,13 +14,13 @@ newgraph
 
   title
     y
-      0.575
+      0.625
     font
       Times-Bold
     fontsize
       10
     : FRED (canonical split) \
-      RGB images (60 per sequence)
+      RGB images (120 per sequence)
 
   newline
     color
@@ -58,29 +58,29 @@ newgraph
                 } \
               }' med/results.csv
 
-  newline
-    color
-      0.916458 0.133982 0.191211
-    label : YOLO11l (25.3M)
-    pts
-      shell : awk '{ \
-                if (NR > 1) { \
-                  gsub(/,/, " "); \
-                  printf("%d %s\n", NR - 1, $8) \
-                } \
-              }' large/results.csv
+   (* newline *)
+     (* color *)
+       (* 0.916458 0.133982 0.191211 *)
+     (* label : YOLO11l (25.3M) *)
+     (* pts *)
+       (* shell : awk '{ \ *)
+                 (* if (NR > 1) { \ *)
+                   (* gsub(/,/, " "); \ *)
+                   (* printf("%d %s\n", NR - 1, $8) \ *)
+                 (* } \ *)
+               (* }' large/results.csv *)
 
-  newline
-    color
-      0.274746 0.0464678 0.992755
-    label : YOLO11x (56.9M)
-    pts
-      shell : awk '{ \
-                if (NR > 1) { \
-                  gsub(/,/, " "); \
-                  printf("%d %s\n", NR - 1, $8) \
-                } \
-              }' xlarge/results.csv
+   (* newline *)
+     (* color *)
+       (* 0.274746 0.0464678 0.992755 *)
+     (* label : YOLO11x (56.9M) *)
+     (* pts *)
+       (* shell : awk '{ \ *)
+                 (* if (NR > 1) { \ *)
+                   (* gsub(/,/, " "); \ *)
+                   (* printf("%d %s\n", NR - 1, $8) \ *)
+                 (* } \ *)
+               (* }' xlarge/results.csv *)
 
 newgraph
 
@@ -101,13 +101,13 @@ newgraph
 
   title
     y
-      0.2
+      0.23
     font
       Times-Bold
     fontsize
       10
     : FRED (canonical split) \
-      RGB images (60 per sequence)
+      RGB images (120 per sequence)
 
   newline
     color
@@ -145,29 +145,29 @@ newgraph
                 } \
               }' med/results.csv
 
-  newline
-    color
-      0.916458 0.133982 0.191211
-    label : YOLO11l (25.3M)
-    pts
-      shell : awk '{ \
-                if (NR > 1) { \
-                  gsub(/,/, " "); \
-                  printf("%d %s\n", NR - 1, $9) \
-                } \
-              }' large/results.csv
+   (* newline *)
+     (* color *)
+       (* 0.916458 0.133982 0.191211 *)
+     (* label : YOLO11l (25.3M) *)
+     (* pts *)
+       (* shell : awk '{ \ *)
+                 (* if (NR > 1) { \ *)
+                   (* gsub(/,/, " "); \ *)
+                   (* printf("%d %s\n", NR - 1, $9) \ *)
+                 (* } \ *)
+               (* }' large/results.csv *)
 
-  newline
-    color
-      0.274746 0.0464678 0.992755
-    label : YOLO11x (56.9M)
-    pts
-      shell : awk '{ \
-                if (NR > 1) { \
-                  gsub(/,/, " "); \
-                  printf("%d %s\n", NR - 1, $9) \
-                } \
-              }' xlarge/results.csv
+   (* newline *)
+     (* color *)
+       (* 0.274746 0.0464678 0.992755 *)
+     (* label : YOLO11x (56.9M) *)
+     (* pts *)
+       (* shell : awk '{ \ *)
+                 (* if (NR > 1) { \ *)
+                   (* gsub(/,/, " "); \ *)
+                   (* printf("%d %s\n", NR - 1, $9) \ *)
+                 (* } \ *)
+               (* }' xlarge/results.csv *)
 
 newgraph
 
@@ -225,7 +225,7 @@ newgraph
 
   title
     y
-      370
+      310
     font
       Times-Bold
     fontsize
@@ -240,7 +240,8 @@ newgraph
     cfill
       1 1 0
     pts
-      shell : for i in nano small med large xlarge; \
+      (* shell : for i in nano small med large xlarge; \ *)
+      shell : for i in nano small med; \
               do \
                 awk '{ \
                   if (NR > 1) { \
