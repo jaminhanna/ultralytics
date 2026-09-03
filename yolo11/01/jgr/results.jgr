@@ -14,13 +14,14 @@ newgraph
 
   title
     y
-      0.5
+      0.575
     font
       Times-Bold
     fontsize
       10
     : FRED (canonical split) \
-      RGB images (30 per sequence)
+      RGB images (30 per sequence) \
+      Validation accuracy
 
   newline
     color
@@ -101,13 +102,14 @@ newgraph
 
   title
     y
-      0.175
+      0.19
     font
       Times-Bold
     fontsize
       10
     : FRED (canonical split) \
-      RGB images (30 per sequence)
+      RGB images (30 per sequence) \
+      Validation accuracy
 
   newline
     color
