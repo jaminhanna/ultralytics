@@ -44,17 +44,17 @@ else
       "$dir"/rgb \
       "$dir"/rgb/images \
       "$dir"/rgb/images/train \
-      "$dir"/rgb/images/val \
+      "$dir"/rgb/images/test \
       "$dir"/rgb/labels \
       "$dir"/rgb/labels/train \
-      "$dir"/rgb/labels/val \
+      "$dir"/rgb/labels/test \
       "$dir"/event \
       "$dir"/event/images \
       "$dir"/event/images/train \
-      "$dir"/event/images/val \
+      "$dir"/event/images/test \
       "$dir"/event/labels \
       "$dir"/event/labels/train \
-      "$dir"/event/labels/val
+      "$dir"/event/labels/test
   fi
 fi
 
@@ -97,42 +97,36 @@ fi
 
 for i in train test
 do
-  if test $i = train
-  then
-    j=train
-  else
-    j=val
-  fi
-  for k in `cd "$fred"/$i ; ls *.zip`
+  for j in `cd "$fred"/$i ; ls *.zip`
   do
-    ( ( cd "$fred"/$i ; unzip $k > /dev/null )
-    l=`echo $k | sed 's/.zip//'`
-    for m in rgb event
+    ( ( cd "$fred"/$i ; unzip $j > /dev/null )
+    k=`echo $j | sed 's/.zip//'`
+    for l in rgb event
     do
       mkdir \
-        "$dir"/$m/images/$j/$l \
-        "$dir"/$m/labels/$j/$l
-      if test $m = rgb
+        "$dir"/$l/images/$i/$k \
+        "$dir"/$l/labels/$i/$k
+      if test $l = rgb
       then
-        if test $l -eq 68
+        if test $k -eq 68
         then
-          ( cd "$fred"/$i/$l/RGB
-          for n in *
+          ( cd "$fred"/$i/$k/RGB
+          for m in *
           do
-            mv $n `echo $n | sed 's/^/Video_68_/'`
+            mv $m `echo $m | sed 's/^/Video_68_/'`
           done )
         fi
-        ls "$fred"/$i/$l/RGB
+        ls "$fred"/$i/$k/RGB
       else
-        ( cd "$fred"/$i/$l/Event/Frames
-        for n in *
+        ( cd "$fred"/$i/$k/Event/Frames
+        for m in *
         do
-          if ! echo $n | grep -q frame
+          if ! echo $m | grep -q frame
           then
-            mv $n `echo $n | sed 's/_/_frame_/2'`
+            mv $m `echo $m | sed 's/_/_frame_/2'`
           fi
         done )
-        ls "$fred"/$i/$l/Event/Frames |
+        ls "$fred"/$i/$k/Event/Frames |
         sed 's/_/_ /3
              s/.png/ .png/' |
         sort -n -k 2 |
@@ -148,9 +142,9 @@ do
       }' | sort -n | head -n $s |
       while read junk pos df
       do
-        if test $m = rgb
+        if test $l = rgb
         then
-          cp "$fred"/$i/$l/RGB/$df "$dir"/$m/images/$j/$l
+          cp "$fred"/$i/$k/RGB/$df "$dir"/$l/images/$i/$k
           if test $type = spiking
           then
             lf=`echo $df | sed 's/jpg/json/'`
@@ -158,7 +152,7 @@ do
             lf=`echo $df | sed 's/jpg/txt/'`
           fi
         else
-          cp "$fred"/$i/$l/Event/Frames/$df "$dir"/$m/images/$j/$l
+          cp "$fred"/$i/$k/Event/Frames/$df "$dir"/$l/images/$i/$k
           if test $type = spiking
           then
             lf=`echo $df | sed 's/png/json/'`
@@ -172,14 +166,14 @@ do
              s/\(\......\):/\10/
              s/\.//
              s/://
-             s/,//g' "$fred"/$i/$l/coordinates.txt |
+             s/,//g' "$fred"/$i/$k/coordinates.txt |
         grep "^$t " | uniq |
         if test $type = spiking
         then
           awk \
             -v df=$df \
             -v lf=$lf \
-            -v labels="$dir"/$m/labels/$j/$l \
+            -v labels="$dir"/$l/labels/$i/$k \
           'BEGIN {
             cmd = "echo '\''a\n"
             cmd = cmd "["
@@ -220,7 +214,7 @@ do
         else
           awk \
             -v lf=$lf \
-            -v labels="$dir"/$m/labels/$j/$l \
+            -v labels="$dir"/$l/labels/$i/$k \
           'BEGIN {
             cmd = "echo '\''a\n"
             while (getline) {
@@ -255,7 +249,7 @@ do
         fi
       done
     done
-    ( cd "$fred"/$i ; rm -rf $l ) ) &
+    ( cd "$fred"/$i ; rm -rf $k ) ) &
     np=$((np+1))
     if test $np -eq $threads
     then
